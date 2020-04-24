@@ -1,3 +1,13 @@
+<html>
+<head>
+    
+<link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/4.0.0/css/bootstrap.min.css" integrity="sha384-Gn5384xqQ1aoWXA+058RXPxPg6fy4IWvTNh0E263XmFcJlSAwiGgFAW/dAiS6JXm" crossorigin="anonymous">
+<script src="https://maxcdn.bootstrapcdn.com/bootstrap/4.0.0/js/bootstrap.min.js" integrity="sha384-JZR6Spejh4U02d8jOt6vLEHfe/JQGiRRSQQxSfFWpi1MquVdAyjUar5+76PVCmYl" crossorigin="anonymous"></script>
+<link rel="stylesheet" type="text/css" href="style.css" >
+
+  </head>
+  <body>
+
 <?php
 
 /**
@@ -21,20 +31,37 @@ if (!empty($_SESSION['login'])) {
   // Если есть логин в сессии, то пользователь уже авторизован.
   // TODO: Сделать выход (окончание сессии вызовом session_destroy()
   //при нажатии на кнопку Выход).
+  
+
+    
   // Делаем перенаправление на форму.
-  header('Location: ./');
+ 
 }
 
 // В суперглобальном массиве $_SERVER PHP сохраняет некторые заголовки запроса HTTP
 // и другие сведения о клиненте и сервере, например метод текущего запроса $_SERVER['REQUEST_METHOD'].
 if ($_SERVER['REQUEST_METHOD'] == 'GET') {
 ?>
-
-<form action="" method="post">
-  <input name="login" />
-  <input name="pass" />
-  <input type="submit" value="Войти" />
+<div class="container align-self-center">
+<form  action="" method="post" id="form-top">
+<div id="for">
+<div class="row" >
+	<h5 class="col"> Введите ваш логин:</h5>
+  <input class="col" name="login" />
+  </div>
+  
+  <div class="row"> <h5 class="col"> Введите ваш пароль:</h5>
+  <input class="col" name="pass" />
+  </div>
+  
+  <div class="row">
+  <input class="col" type="submit" value="Войти" />
+  </div></div>
 </form>
+</div>
+</body> 
+</html>
+
 
 <?php
 }
@@ -42,13 +69,31 @@ if ($_SERVER['REQUEST_METHOD'] == 'GET') {
 else {
 
   // TODO: Проверть есть ли такой логин и пароль в базе данных.
+    $host='localhost';
+    $user = 'u16350';
+    $password = '1871497';
+    $db_name = 'u16350';   // Имя базы данных
+    $link = mysqli_connect($host, $user, $password, $db_name);;
+    
+    $err=0;
+    
+    $sql = mysqli_query($link, 'SELECT * FROM application');
+    while ($result = mysqli_fetch_array($sql)) {
+        if ($result['login']==$_POST['login'] && $result['pass']==$_POST['pass']){
   // Выдать сообщение об ошибках.
-
+  
   // Если все ок, то авторизуем пользователя.
   $_SESSION['login'] = $_POST['login'];
   // Записываем ID пользователя.
   $_SESSION['uid'] = 123;
 
   // Делаем перенаправление.
-  header('Location: ./');
+  header('Location: ./'); 
+        }
+        else{$err=1;
+            
+        }
+    }if ($err==1){echo "<div class='container' id='notify'> <h2 id='for'> Таких учетных данных нет в базе данных.  Нажмите <a href='login.php'> сюда </a>, чтобы попробовать войти снова. </h2> </div>";}
 }
+
+
